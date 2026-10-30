@@ -75,9 +75,6 @@
 /* Whether to enable support key */
 #undef ENABLE_SUPPORT_KEY
 
-/* Should the Release notes message be shown on upgrade */
-#undef ENABLE_WELCOME_MESSAGE
-
 /* User feedback URL. */
 #undef FEEDBACK_URL
 
@@ -140,9 +137,6 @@
 
 /* Default value of feature_lock.unlock_title */
 #undef UNLOCK_TITLE
-
-/* The welcome url of the build. */
-#undef WELCOME_URL
 
 /* Default value of feature_lock.writer_unlock_highlights */
 #undef WRITER_UNLOCK_HIGHLIGHTS

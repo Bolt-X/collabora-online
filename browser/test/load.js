@@ -93,8 +93,6 @@ data = data.replace(/%POSTMESSAGE_ORIGIN%/g, '');
 data = data.replace(/%RELAY_ORIGIN%/g, '');
 data = data.replace(/%BROWSER_LOGGING%/g, 'true');
 data = data.replace(/%COOLWSD_VERSION%/g, 'loadjs');
-data = data.replace(/%ENABLE_WELCOME_MSG%/g, 'false');
-data = data.replace(/%AUTO_SHOW_WELCOME%/g, 'false');
 data = data.replace(/%AUTO_SHOW_FEEDBACK%/g, 'false');
 data = data.replace(/%ENABLE_UPDATE_NOTIFICATION%/g, 'false');
 data = data.replace(/%USER_INTERFACE_MODE%/g, '');
@@ -118,7 +116,6 @@ data = data.replace(/%INDIRECTION_URL%/g, '');
 data = data.replace(/%GEOLOCATION_SETUP%/g, 'false');
 data = data.replace(/%CANVAS_SLIDESHOW_ENABLED%/g, 'true');
 
-data = data.replace(/%WELCOME_URL%/g, '');
 data = data.replace(/%FEEDBACK_URL%/g, '');
 data = data.replace(/%BUYPRODUCT_URL%/g, '');
 // data = data.replace(/<!--%CSS_VARIABLES%-->/g, '');

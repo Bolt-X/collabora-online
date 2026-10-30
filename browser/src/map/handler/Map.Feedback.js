@@ -78,16 +78,7 @@ window.L.Map.Feedback = window.L.Handler.extend({
 	},
 
 	onFeedback: function () {
-		if (this._map.welcome && this._map.welcome.isVisible && this._map.welcome.isVisible()) {
-			setTimeout(window.L.bind(this.onFeedback, this), this._map.options.feedbackTimeout);
-			return;
-		}
-
-		if (this._map.welcome && this._map.welcome.isVisible && this._map.welcome.isVisible())
-			setTimeout(window.L.bind(this.onFeedback, this), 3000);
-		else {
-			this.askForFeedbackDialog();
-		}
+		this.askForFeedbackDialog();
 	},
 
 	askForFeedbackDialog: function () {

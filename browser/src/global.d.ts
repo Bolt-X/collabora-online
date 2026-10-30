@@ -427,7 +427,6 @@ interface Window {
 	showAISidebar: boolean;
 	showAINotebookbar: boolean;
 	allowUpdateNotification: boolean;
-	autoShowWelcome: boolean;
 	bundlejsLoaded: boolean;
 	canvasSlideshowEnabled: boolean;
 	remoteLinksEnabled: boolean;
@@ -443,7 +442,6 @@ interface Window {
 	simulateError: (name: string) => boolean;
 	enableMacrosExecution: boolean;
 	hideLegacyScriptWarning: boolean;
-	enableWelcomeMessage: boolean;
 	expectedServerId: string;
 	extraExportFormats: string[];
 	fullyLoadedAndReady: boolean;

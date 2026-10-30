@@ -509,7 +509,6 @@ window.L.Control.NotebookbarWriter = window.L.Control.Notebookbar.extend({
 	},
 
 	getHelpTab: function() {
-		let hasLatestUpdates = window.enableWelcomeMessage || window.mode.isCODesktop();
 		var hasFeedback = this.map.feedback;
 		var hasAccessibilitySupport = window.enableAccessibility;
 		var hasAccessibilityCheck = this.map.getDocType() === 'text';
@@ -583,20 +582,6 @@ window.L.Control.NotebookbarWriter = window.L.Control.Notebookbar.extend({
 						},
 					]
 				},
-				hasLatestUpdates ?
-					{
-						'type': 'toolbox',
-						'children': [
-							{
-								'id': 'latestupdates',
-								'type': 'bigtoolitem',
-								'text': _('Latest Updates'),
-								'command': '.uno:LatestUpdates',
-								'accessibility': { focusBack: true,	combination: 'LU', de: null }
-
-							}
-						]
-					} : {},
 				hasFeedback ?
 					{
 						'type': 'toolbox',

@@ -163,7 +163,6 @@
 /src/map/handler/Map.SlideShow.js
 /src/map/handler/Map.StateChanges.js
 /src/map/handler/Map.VersionBar.js
-/src/map/handler/Map.Welcome.js
 /src/map/handler/Map.WOPI.js
 /src/map/Map.js
 /src/UNO/Key.js

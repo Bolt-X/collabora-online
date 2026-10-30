@@ -61,7 +61,6 @@ m4_ifelse(APP, [true],
   <input type="hidden" id="init-product-branding-url" value="INFO_URL" />
 ],
 [
-  <input type="hidden" id="init-welcome-url" value="%WELCOME_URL%" />
   <input type="hidden" id="init-feedback-url" value="%FEEDBACK_URL%" />
   <input type="hidden" id="init-accessibility-statement-url" value="%ACCESSIBILITY_STATEMENT_URL%" />
   <input type="hidden" id="init-buy-product-url" value="%BUYPRODUCT_URL%" />
@@ -306,7 +305,6 @@ m4_ifelse(APP, [true],
       data-show-ai-notebookbar = "%SHOW_AI_NOTEBOOKBAR%"
       data-allow-update-notification = "%ENABLE_UPDATE_NOTIFICATION%"
       data-auto-show-feedback = "%AUTO_SHOW_FEEDBACK%"
-      data-auto-show-welcome = "%AUTO_SHOW_WELCOME%"
       data-canvas-slideshow-enabled = "%CANVAS_SLIDESHOW_ENABLED%"
       data-check-file-info-override = "%CHECK_FILE_INFO_OVERRIDE%"
       data-cool-logging = "%BROWSER_LOGGING%"
@@ -324,7 +322,6 @@ m4_ifelse(APP, [true],
       data-enable-debug = "%ENABLE_DEBUG%"
       data-enable-experimental-features = "%EXPERIMENTAL_FEATURES%"
       data-enable-macros-execution = "%ENABLE_MACROS_EXECUTION%"
-      data-enable-welcome-message = "%ENABLE_WELCOME_MSG%"
       data-extra-export-formats = "%EXTRA_EXPORT_FORMATS%"
       data-frame-ancestors = "%FRAME_ANCESTORS%"
       data-geolocation-setup = "%GEOLOCATION_SETUP%"

@@ -265,7 +265,6 @@ const Util::UnorderedStringMap<std::string> DefAppConfig = {
     { "wasm.enable", "false" },
     { "watermark.opacity", "0.2" },
     { "watermark.text", "" },
-    { "welcome.enable", "false" },
     { "zotero.enable", "true" },
 };
 

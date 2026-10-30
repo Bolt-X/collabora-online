@@ -249,7 +249,6 @@ window.L.IFrameDialog = window.L.Class.extend({
 // Close when pressing Escape
 window.addEventListener('keyup', function iframeKeyupListener (e) {
 	if (e.keyCode === 27 || e.key === 'Escape') {
-		window.postMessage('{"MessageId":"welcome-close"}', window.origin);
 		window.postMessage('{"MessageId":"settings-cancel"}', window.origin);
 	}
 });

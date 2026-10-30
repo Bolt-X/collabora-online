@@ -2739,33 +2739,13 @@ class Socket {
 			msg += fontsMissingObj.fontsmissing[i];
 		}
 
-		if (
-			this._map.welcome &&
-			!this._map.welcome.isGuest() &&
-			this._map.welcome.shouldWelcome() &&
-			window.autoShowWelcome
-		) {
-			setTimeout(
-				function (this: Socket) {
-					this._map.uiManager.showInfoModal(
-						'fontsmissing',
-						_('Missing Fonts'),
-						msg,
-						null,
-						_('Close'),
-					);
-				}.bind(this),
-				60000,
-			);
-		} else {
-			this._map.uiManager.showInfoModal(
-				'fontsmissing',
-				_('Missing Fonts'),
-				msg,
-				null,
-				_('Close'),
-			);
-		}
+		this._map.uiManager.showInfoModal(
+			'fontsmissing',
+			_('Missing Fonts'),
+			msg,
+			null,
+			_('Close'),
+		);
 	}
 
 	// 'info: ' message.

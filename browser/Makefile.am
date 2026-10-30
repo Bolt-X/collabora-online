@@ -166,11 +166,6 @@ COOL_IMAGES_CUSTOM_DST = $(patsubst $(CUSTOM_ICONS_DIRECTORY)/%,$(DIST_FOLDER)/i
 COOL_HTML_SRC = $(shell find $(srcdir)/html -name '*.html')
 COOL_HTML_DST = $(patsubst $(srcdir)/html/%.html,$(DIST_FOLDER)/%.html,$(COOL_HTML_SRC))
 
-if ENABLE_WELCOME_MESSAGE
-COOL_WELCOME_SRC = $(shell find $(srcdir)/welcome -name '*')
-COOL_WELCOME_DST = $(patsubst $(srcdir)/welcome/%,$(DIST_FOLDER)/welcome/%,$(COOL_WELCOME_SRC))
-endif
-
 COOL_EXTENSIONS_SRC = \
 	$(srcdir)/extensions/cool.js \
 	$(srcdir)/extensions/gas-kit-runner.js \
@@ -292,7 +287,6 @@ COOL_CSS =\
 	$(srcdir)/css/iframedialog.css \
 	$(builddir)/node_modules/smartmenus/dist/css/sm-core-css.css \
 	$(builddir)/node_modules/smartmenus/dist/css/sm-simple/sm-simple.css \
-	$(srcdir)/css/welcome.css \
 	$(srcdir)/css/menubar.css \
 	$(srcdir)/css/mobilewizard.css \
 	$(srcdir)/css/jsdialogs.css \
@@ -640,7 +634,6 @@ COOL_JS_LST =\
 	src/dom/DomEvent.Pointer.js \
 	src/map/handler/Map.Keyboard.js \
 	src/map/handler/Map.KeyboardShortcuts.ts \
-	src/map/handler/Map.Welcome.js \
 	src/map/handler/Map.Feedback.js \
 	src/map/handler/Map.Settings.ts \
 	src/map/handler/Map.VersionBar.js \
@@ -1178,20 +1171,9 @@ if APP_HAS_BRANDING
 	@if test -d "$(APP_BRANDING_DIR)" ; then cp -a "$(APP_BRANDING_DIR)"/images/*.svg $(DIST_FOLDER)/images/ ; fi
 	@if test -d "$(APP_BRANDING_DIR)" ; then cp -a "$(APP_BRANDING_DIR)/images/toolbar-bg-logo.svg" $(DIST_FOLDER)/images/toolbar-bg.svg ; fi
 	@if test "$(ENABLE_QTAPP)" = true || test "$(ENABLE_MACOSAPP)" = true || test "$(ENABLE_WINDOWSAPP)" = true ; then \
-		if test -d "$(APP_BRANDING_DIR)/welcome" ; then cp -a "$(APP_BRANDING_DIR)/welcome" "$(DIST_FOLDER)/" ; fi ; \
 	fi
 	@echo
 	@echo "JS, HTML and CSS has been updated ($(DIST_FOLDER))."
-endif
-# A release build carries a welcome slideshow only when the app branding provides one. A debug
-# build also bundles the placeholder, which the apps keep hidden unless the welcome.enable
-# setting is true.
-if ENABLE_DEBUG
-	@if test "$(ENABLE_QTAPP)" = true || test "$(ENABLE_MACOSAPP)" = true || test "$(ENABLE_WINDOWSAPP)" = true ; then \
-		mkdir -p $(DIST_FOLDER)/welcome && \
-		test -f $(DIST_FOLDER)/welcome/welcome-slideshow.odp || cp $(srcdir)/welcome/welcome-slideshow.odp $(DIST_FOLDER)/welcome/welcome-slideshow.odp ; \
-		test -f $(DIST_FOLDER)/welcome/welcome.svg || cp $(srcdir)/welcome/welcome.svg $(DIST_FOLDER)/welcome/welcome.svg ; \
-	fi
 endif
 # The previews are the committed renderings from introdocs/render_previews.py, the English one
 # and one per translated language; a document without them shows the thumbnail embedded in
@@ -1338,7 +1320,6 @@ endif
 
 cool_html_prereqs = $(srcdir)/html/cool.html.m4 \
 	$(COOL_HTML_DST) \
-	$(COOL_WELCOME_DST) \
 	$(COOL_EXTENSIONS_DST) \
 	$(DIST_FOLDER)/bundle.css \
 	$(DIST_FOLDER)/global.js \
@@ -1472,15 +1453,6 @@ $(DIST_FOLDER)/%.html: $(srcdir)/html/%.html
 		`ln -sf $(abs_srcdir)/$< $@`; \
 	fi
 
-if ENABLE_WELCOME_MESSAGE
-$(DIST_FOLDER)/welcome/%: $(srcdir)/welcome/%
-	@mkdir -p $(dir $@)
-	@if test -z '$(ENABLE_BROWSERSYNC)'; then \
-		`cp $< $@`; \
-	else \
-		`ln -sf $(abs_srcdir)/$< $@`; \
-	fi
-endif
 
 $(DIST_FOLDER)/extensions/%: $(srcdir)/extensions/%
 	@mkdir -p $(dir $@)
@@ -1798,7 +1770,6 @@ pot:
 		src/map/handler/Map.StateChanges.js \
 		src/map/handler/Map.VersionBar.js \
 		src/map/handler/Map.WOPI.js \
-		src/map/handler/Map.Welcome.js \
 		src/map/handler/Map.Settings.ts \
 		src/slideshow/engine/SlideShowHandler.ts \
 		src/slideshow/PauseTimer.ts \
@@ -1810,13 +1781,10 @@ pot:
 
 	html2po --pot --input=html/cool-help.html --output=po/templates/cool-help.pot --duplicates=merge
 	html2po --pot --input=descriptions/google-play.html --output=po/templates/descriptions.pot --duplicates=merge --keepcomments
-	html2po --pot --input=welcome/welcome.html --output=po/templates/welcome.pot --duplicates=merge
 	for dir in extensions/*/; do \
 		test -f "$$dir/manifest.json" || continue; \
 		$(PYTHON) util/extension-pot.py "$$dir" || exit 1; \
 	done
-	$(PYTHON) $(srcdir)/util/appendwelcome.py po/templates/welcome.pot po/templates/cool-ui.pot
-	rm po/templates/welcome.pot
 	msguniq -w 78 -t UTF-8 po/templates/cool-ui.pot > po/templates/cool-ui.pot.new; mv po/templates/cool-ui.pot.new po/templates/cool-ui.pot
 
 l10n: pot

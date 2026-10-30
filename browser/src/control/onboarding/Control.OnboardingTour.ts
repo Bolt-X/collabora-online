@@ -53,7 +53,6 @@ class OnboardingTourController {
 	// sidebar was requested.
 	onSidebarSettled(): void {
 		this.uiReady = true;
-		this.maybeAutoStart();
 	}
 
 	// Opens the tour whatever the stored preference says, so that the user can ask for it again
@@ -119,39 +118,6 @@ class OnboardingTourController {
 		this.steps = [];
 		this.stepIndex = 0;
 		this.setHighlight(null);
-	}
-
-	private maybeAutoStart(): void {
-		// The steps are chosen from what is on screen when the tour starts.
-		if (!this.uiReady || this.isRunning() || this.startTask !== null) return;
-
-		if (!window.mode.isDesktop()) return;
-
-		// A read-only view has neither the toolbar nor the notebookbar the tour walks
-		// through.
-		if (app.isReadOnly()) return;
-
-		if (app.map.uiManager.getBooleanDocTypePref('onboardingTourSeen', false))
-			return;
-
-		// The sidebar attaches its content in a layouting task of its own. This task runs
-		// after it, so the tour sees the sidebar as it will stay.
-		this.startTask = app.layoutingService.appendLayoutingTask(() => {
-			this.startTask = null;
-			this.startUnlessWelcomeIsOpen();
-		});
-	}
-
-	// The welcome dialog explains the release and the tour explains the screen, so the tour
-	// waits until the welcome has been closed.
-	private startUnlessWelcomeIsOpen(): void {
-		const welcome = app.map.welcome;
-		if (welcome && welcome.isOpen()) {
-			app.map.once('welcomeclosed', () => this.maybeAutoStart());
-			return;
-		}
-
-		this.start();
 	}
 
 	private showStep(index: number): void {

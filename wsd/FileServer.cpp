@@ -644,12 +644,6 @@ bool FileServerRequestHandler::handleRequest(const HTTPRequest& request,
                                               requestUri.toString() + "].");
         }
 
-        if (endPoint == "welcome.html")
-        {
-            preprocessWelcomeFile(request, response, requestDetails, message, socket);
-            return true;
-        }
-
         if (endPoint == "cool.html" ||
             endPoint == "cool-qt.html" ||
             endPoint == "cool-preview.html" ||
@@ -1658,30 +1652,12 @@ FileServerRequestHandler::ResourceAccessDetails FileServerRequestHandler::prepro
     const unsigned int minSavedMessTimeoutSecs = config.getUInt("per_view.min_saved_message_timeout_secs", 0);
     Poco::replaceInPlace(preprocess, std::string("%MIN_SAVED_MESSAGE_TIMEOUT_SECS%"), std::to_string(minSavedMessTimeoutSecs));
 
-    #if ENABLE_WELCOME_MESSAGE
-    std::string enableWelcomeMessage = "true";
-    std::string autoShowWelcome = "true";
-    if (config.getBool("home_mode.enable", false))
-    {
-        autoShowWelcome = stringifyBoolFromConfig(config, "welcome.enable", false);
-    }
-    Poco::replaceInPlace(preprocess, std::string("%PRODUCT_BRANDING_NAME%"), std::string());
-    Poco::replaceInPlace(preprocess, std::string("%PRODUCT_BRANDING_URL%"), std::string());
-    Poco::replaceInPlace(preprocess, std::string("%LOGO_URL%"), std::string());
-    #else // configurable
-    std::string enableWelcomeMessage = stringifyBoolFromConfig(config, "welcome.enable", false);
-    std::string autoShowWelcome = stringifyBoolFromConfig(config, "welcome.enable", false);
-
     std::string brandProductURL = ConfigUtil::getConfigValue<std::string>(config, "user_interface.brandProductURL", "");
     std::string brandProductName = ConfigUtil::getConfigValue<std::string>(config, "user_interface.brandProductName", "");
     std::string logoUrl = ConfigUtil::getConfigValue<std::string>(config, "user_interface.logoURL", "");
     Poco::replaceInPlace(preprocess, std::string("%PRODUCT_BRANDING_NAME%"), brandProductName);
     Poco::replaceInPlace(preprocess, std::string("%PRODUCT_BRANDING_URL%"), brandProductURL);
     Poco::replaceInPlace(preprocess, std::string("%LOGO_URL%"), logoUrl);
-    #endif
-
-    Poco::replaceInPlace(preprocess, std::string("%ENABLE_WELCOME_MSG%"), enableWelcomeMessage);
-    Poco::replaceInPlace(preprocess, std::string("%AUTO_SHOW_WELCOME%"), autoShowWelcome);
 
     std::string enableAccessibility = stringifyBoolFromConfig(config, "accessibility.enable", Util::isMobileApp());
     Poco::replaceInPlace(preprocess, std::string("%ENABLE_ACCESSIBILITY%"), enableAccessibility);
@@ -1761,7 +1737,6 @@ FileServerRequestHandler::ResourceAccessDetails FileServerRequestHandler::prepro
     Poco::replaceInPlace(preprocess, std::string("%ACCESSIBILITY_STATEMENT_URL%"),
                          ConfigUtil::getConfigValue<std::string>(
                              config, "accessibility_statement_url", ACCESSIBILITY_STATEMENT_URL));
-    Poco::replaceInPlace(preprocess, std::string("%WELCOME_URL%"), std::string(WELCOME_URL));
 
     Poco::replaceInPlace(preprocess, BUYPRODUCT_URL, urv[BUYPRODUCT_URL]);
 
@@ -1798,10 +1773,7 @@ FileServerRequestHandler::ResourceAccessDetails FileServerRequestHandler::prepro
     ContentSecurityPolicy csp;
     csp.appendDirective("default-src", "'none'");
     csp.appendDirective("frame-src", "'self'");
-    csp.appendDirectiveUrl("frame-src", WELCOME_URL);
-    // The welcome and feedback pages are usually served from the same origin.
-    if (Util::trimURI(FEEDBACK_URL) != Util::trimURI(WELCOME_URL))
-        csp.appendDirectiveUrl("frame-src", FEEDBACK_URL);
+    csp.appendDirectiveUrl("frame-src", FEEDBACK_URL);
     csp.appendDirectiveUrl("frame-src", Uri::decode(urv[BUYPRODUCT_URL]));
     csp.appendDirective("frame-src", "blob:"); // Equivalent to unsafe-eval!
     csp.appendDirective("connect-src", "'self'");
@@ -2016,33 +1988,6 @@ FileServerRequestHandler::ResourceAccessDetails FileServerRequestHandler::prepro
 #endif
 
     return ResourceAccessDetails(std::move(wopiSrc), urv[ACCESS_TOKEN], urv[NO_AUTH_HEADER], urv[PERMISSION], urv[DEBUG_WOPI_CONFIG_ID], std::move(userId));
-}
-
-void FileServerRequestHandler::preprocessWelcomeFile(const HTTPRequest& request,
-                                                     http::Response& httpResponse,
-                                                     const RequestDetails& requestDetails,
-                                                     std::istream& message,
-                                                     const std::shared_ptr<StreamSocket>& socket)
-{
-    const std::string relPath = getRequestPathname(request, requestDetails);
-    LOG_DBG("Preprocessing file: " << relPath);
-    std::string templateWelcome = *getUncompressedFile(relPath);
-
-    HTMLForm form(request, message);
-    std::string uiTheme = form.get("ui_theme", "");
-    uiTheme = (uiTheme == "dark") ? "dark" : "light";
-    Poco::replaceInPlace(templateWelcome, std::string("%UI_THEME%"), uiTheme);
-
-    // Ask UAs to block if they detect any XSS attempt
-    httpResponse.add("X-XSS-Protection", "1; mode=block");
-    // No referrer-policy
-    httpResponse.add("Referrer-Policy", "no-referrer");
-    httpResponse.add("X-Content-Type-Options", "nosniff");
-
-    httpResponse.setBody(std::move(templateWelcome));
-    socket->send(httpResponse);
-
-    LOG_TRC("Sent file: " << relPath);
 }
 
 void FilePartHandler::handlePart(const Poco::Net::MessageHeader& header, std::istream& stream)

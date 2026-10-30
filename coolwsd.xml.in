@@ -295,7 +295,6 @@
 
     <comment_avatar desc="URL of an image to use as the avatar for all comments, overriding per-user avatars. When empty (default), normal user avatars are shown" type="string" default=""></comment_avatar>
 
-    @WELCOME_CONFIG_FRAGMENT@
 
     <user_interface>
       <mode type="string" desc="Controls the user interface style. The 'default' means: Take the value from ui_defaults, or decide for one of compact or tabbed (default|compact|tabbed)" default="default">default</mode>

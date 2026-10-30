@@ -123,7 +123,6 @@ interface MapInterface extends Evented {
 	isReadOnlyMode(): boolean;
 	remove(): MapInterface;
 
-	welcome: WelcomeInterface;
 	_setLockProps(lockInfo: ParsedJSONResult): void;
 	_setRestrictions(restrictionInfo: ParsedJSONResult): void;
 	hideRestrictedItems(it: any, item: any, button: any): void;

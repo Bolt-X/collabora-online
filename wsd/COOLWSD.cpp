@@ -2318,24 +2318,8 @@ void COOLWSD::innerInitialize(Poco::Util::Application& self)
     setenv("SAL_CONFIG_STATICIZE", "true", 1);
 
     // Log the connection and document limits.
-#if ENABLE_WELCOME_MESSAGE
-    if (ConfigUtil::getConfigValue<bool>(conf, "home_mode.enable", false))
-    {
-        COOLWSD::MaxConnections = 20;
-        COOLWSD::MaxDocuments = 10;
-    }
-    else
-    {
-        conf.setString("welcome.enable", "true");
-        COOLWSD::MaxConnections = MAX_CONNECTIONS;
-        COOLWSD::MaxDocuments = MAX_DOCUMENTS;
-    }
-#else
-    {
-        COOLWSD::MaxConnections = MAX_CONNECTIONS;
-        COOLWSD::MaxDocuments = MAX_DOCUMENTS;
-    }
-#endif
+    COOLWSD::MaxConnections = MAX_CONNECTIONS;
+    COOLWSD::MaxDocuments = MAX_DOCUMENTS;
 
     LOG_DBG("net::Defaults: Socket[inactivityTimeout " << net::Defaults.inactivityTimeout
                                                        << ", maxExtConnections "

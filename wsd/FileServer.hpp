@@ -148,11 +148,6 @@ private:
                                          std::istream& message,
                                          bool noCache,
                                          const std::shared_ptr<StreamSocket>& socket);
-    void preprocessWelcomeFile(const Poco::Net::HTTPRequest& request,
-                               http::Response& httpResponse,
-                               const RequestDetails& requestDetails,
-                               std::istream& message,
-                               const std::shared_ptr<StreamSocket>& socket);
 
     static void uploadFileToIntegrator(const Poco::Net::HTTPRequest& request,
                                        std::istream& message,

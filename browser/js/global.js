@@ -250,7 +250,6 @@ class InitializerBase {
 		this.uriPrefix = document.getElementById('init-uri-prefix').value;
 		this.brandingUriPrefix = this.uriPrefix;
 
-		window.welcomeUrl = document.getElementById("init-welcome-url") ? document.getElementById("init-welcome-url").value: "";
 		window.feedbackUrl = document.getElementById("init-feedback-url") ? document.getElementById("init-feedback-url").value: "";
 		window.accessibilityStatementUrl = document.getElementById("init-accessibility-statement-url") ? document.getElementById("init-accessibility-statement-url").value: "";
 		window.buyProductUrl = document.getElementById("init-buy-product-url") ? document.getElementById("init-buy-product-url").value: "";
@@ -279,8 +278,6 @@ class InitializerBase {
 		window.accessHeader = element.dataset.accessHeader;
 		window.postMessageOriginExt = "";
 		window.coolwsdVersion = "";
-		window.enableWelcomeMessage = false;
-		window.autoShowWelcome = false;
 		window.autoShowFeedback = true;
 		window.allowUpdateNotification = false;
 		window.useIntegrationTheme = false;
@@ -461,8 +458,6 @@ class BrowserInitializer extends InitializerBase {
 		window.postMessageOriginExt = element.dataset.postMessageOriginExt;
 		window.coolLogging = element.dataset.coolLogging;
 		window.coolwsdVersion = element.dataset.coolwsdVersion;
-		window.enableWelcomeMessage = element.dataset.enableWelcomeMessage.toLowerCase().trim() === "true";
-		window.autoShowWelcome = element.dataset.autoShowWelcome.toLowerCase().trim() === "true";
 		window.autoShowFeedback = element.dataset.autoShowFeedback.toLowerCase().trim() === "true";
 		window.allowUpdateNotification = element.dataset.allowUpdateNotification.toLowerCase().trim() === "true";
 		window.userInterfaceMode = element.dataset.userInterfaceMode;
