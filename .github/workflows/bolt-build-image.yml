@@ -1,0 +1,77 @@
+# Build image Collabora từ fork này (engine + coolwsd + browser) rồi đẩy lên ghcr.io.
+# Đi theo docker/from-source/build.sh của upstream. Lần đầu build engine rất lâu; cache ccache được lưu cả khi
+# job lỗi hoặc hết giờ, nên chạy lại sẽ nối tiếp được thay vì build lại từ đầu.
+name: Bolt build image
+
+on:
+  push:
+    branches: ['bolt/**']
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 355
+    env:
+      IMAGE: ghcr.io/bolt-x/collabora-online
+      CCACHE_DIR: ${{ github.workspace }}/.ccache
+      CCACHE_MAXSIZE: 6G
+      CCACHE_COMPRESS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            docker/from-source
+
+      - name: Giải phóng đĩa
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost /usr/share/swift
+          sudo docker image prune -af >/dev/null
+          df -h / | tail -1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Cài thư viện build
+        run: |
+          sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/*.sources
+          sudo sed -i 's/^# deb-src/deb-src/' /etc/apt/sources.list
+          sudo apt-get update -qq
+          sudo apt-get build-dep -y -qq libreoffice
+          sudo apt-get install -y -qq ccache libcap-dev libcap2-bin python3-polib python3-lxml fontconfig libpam-dev libcppunit-dev pkg-config m4 lsb-release libpng-dev libzstd-dev
+
+      - uses: actions/cache/restore@v4
+        with:
+          path: .ccache
+          key: ccache-${{ github.sha }}
+          restore-keys: ccache-
+
+      - name: Build engine, coolwsd, browser
+        timeout-minutes: 310
+        env:
+          COLLABORA_ONLINE_REPO: https://github.com/${{ github.repository }}.git
+          COLLABORA_ONLINE_BRANCH: ${{ github.ref_name }}
+          NO_DOCKER_IMAGE: '1'
+        run: |
+          ccache -z
+          bash docker/from-source/build.sh
+          ccache -s | head -12
+
+      - name: Lưu ccache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .ccache
+          key: ccache-${{ github.sha }}-${{ github.run_attempt }}
+
+      - name: Đóng gói và đẩy image
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          TAG="26.04.5.2-${GITHUB_SHA::9}"
+          docker build -t "$IMAGE:$TAG" -f docker/from-source/Ubuntu docker/from-source
+          docker push "$IMAGE:$TAG"
+          echo "### Image: \`$IMAGE:$TAG\`" >> "$GITHUB_STEP_SUMMARY"
