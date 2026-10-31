@@ -18,7 +18,6 @@
 /// <reference path="../src/app/iface/MapZoom.Interface.ts" />
 /// <reference path="../src/app/iface/SocketTypes.Interface.ts" />
 /// <reference path="../src/app/iface/TraceEvents.Interface.ts" />
-/// <reference path="../src/app/iface/Welcome.Interface.ts" />
 /// <reference path="../src/global.d.ts" />
 
 /// <reference path="./refs/globals.ts" />
